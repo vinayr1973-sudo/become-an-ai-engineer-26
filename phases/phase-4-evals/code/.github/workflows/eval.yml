@@ -1,0 +1,40 @@
+# Agent Regression Harness — GitHub Actions
+#
+# Reference workflow from Phase 4. Copy into your own repo's
+# .github/workflows/ and wire ANTHROPIC_API_KEY as a repo secret.
+# Blocks the merge if the golden-dataset pass rate drops 3+ points
+# below the committed baseline.
+name: Agent Regression
+
+on: [pull_request]
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run golden dataset
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python evals/run_golden.py
+
+      - name: Check pass rate against baseline
+        run: |
+          PASS_RATE=$(cat results/pass_rate.json | jq .rate)
+          BASELINE=$(cat evals/baseline.json | jq .rate)
+          python -c "
+          pass_rate = $PASS_RATE
+          baseline = $BASELINE
+          if pass_rate < baseline - 0.03:
+              print(f'FAIL: {pass_rate:.1%} < baseline {baseline:.1%} - 3pp')
+              exit(1)
+          print(f'PASS: {pass_rate:.1%} (baseline {baseline:.1%})')
+          "

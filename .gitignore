@@ -1,0 +1,26 @@
+# --- Source originals (published under canonical names README.md / SKILL.md) ---
+AI-Engineer-26-README.md
+AI-Engineer-26-SKILL.md
+
+# --- Working source for the guide (published as BecomeAnAIEngineer26.pdf) ---
+BecomeAnAIEngineer26.docx
+
+# --- Internal build prompt — never publish ---
+CODER3-GitHub-Prompt.md
+
+# --- Raw diagram screenshots (content lives in the published PDF) ---
+WhatsApp Image*.jpeg
+*.jpeg
+*.jpg
+
+# --- Python ---
+__pycache__/
+*.pyc
+.env
+*.egg-info/
+dist/
+results/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
